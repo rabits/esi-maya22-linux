@@ -149,6 +149,7 @@ int main(int argc, char *argv[])
     if( do_c || do_m || do_l || do_r || do_L || do_R ) {
         hiddev = hid_open(VENDOR_ID, PRODUCT_ID, NULL);
         if( hiddev != NULL ) {
+            send(hiddev, 0x1a, 0x00);
             if( do_c ) {
                 wprintf(L"  Set input channel: %d\n", input_channel);
                 send(hiddev, 0x2a, input_channel);
@@ -173,6 +174,7 @@ int main(int argc, char *argv[])
                 wprintf(L"  Set output right volume: %d\n", output_r);
                 send(hiddev, 0x09, output_r);
             }
+            send(hiddev, 0x1a, 0x00);
             hid_close(hiddev);
         } else
             wprintf(L"Unable to open hid device\n");
