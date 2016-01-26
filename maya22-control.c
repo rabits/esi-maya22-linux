@@ -71,8 +71,8 @@ int main(int argc, char *argv[])
 
     // Parse arguments
     int opt = 0;
-    char c;
-    while( (c = getopt (argc, argv, "edc:MmIil:r:L:R:")) != -1 ) {
+    signed char c;
+    while( (c = getopt(argc, argv, "edc:MmIil:r:L:R:h")) != -1 ) {
         switch( c ) {
             case 'e':
                 do_e = true;
@@ -149,7 +149,6 @@ int main(int argc, char *argv[])
     if( do_c || do_m || do_l || do_r || do_L || do_R ) {
         hiddev = hid_open(VENDOR_ID, PRODUCT_ID, NULL);
         if( hiddev != NULL ) {
-            send(hiddev, 0x1a, 0x00);
             if( do_c ) {
                 wprintf(L"  Set input channel: %d\n", input_channel);
                 send(hiddev, 0x2a, input_channel);
