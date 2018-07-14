@@ -67,15 +67,18 @@ int main(int argc, char *argv[])
     bool monitor = false, input_mute = false;
     unsigned char input_channel = 0x8; // MIC: 0x1, HIZ: 0x2, LINE: 0x4, MIC_HIZ: 0x8, MUTE: 0xc2
 
-    bool do_e = false, do_c = false, do_m = false, do_l = false, do_r = false, do_L = false, do_R = false;
+    bool do_e = false, do_i = false, do_c = false, do_m = false, do_l = false, do_r = false, do_L = false, do_R = false;
 
     // Parse arguments
     int opt = 0;
     signed char c;
-    while( (c = getopt(argc, argv, "edc:MmIil:r:L:R:h")) != -1 ) {
+    while( (c = getopt(argc, argv, "eidc:Mml:r:L:R:h")) != -1 ) {
         switch( c ) {
             case 'e':
                 do_e = true;
+                break;
+            case 'i':
+                do_i = true;
                 break;
             case 'd':
                 do_c = true; do_m = true; do_l = true; do_r = true; do_L = true; do_R = true;
@@ -125,6 +128,7 @@ int main(int argc, char *argv[])
             default:
                 wprintf(L"Usage: %s [options]\n\n", argv[0]);
                 wprintf(L"  -e          - Enumerate available devices\n");
+                wprintf(L"  -i          - Init device\n");
                 wprintf(L"  -d          - Set default values\n");
                 wprintf(L"  -c <name>   - Set input channel ('mic', 'hiz', 'line', 'mic_hiz', 'mute')\n");
                 wprintf(L"  -M          - Input monitoring on\n");
@@ -146,9 +150,13 @@ int main(int argc, char *argv[])
     if( do_e )
         enumerate_hid();
 
-    if( do_c || do_m || do_l || do_r || do_L || do_R ) {
+    if( do_i || do_c || do_m || do_l || do_r || do_L || do_R ) {
         hiddev = hid_open(VENDOR_ID, PRODUCT_ID, NULL);
         if( hiddev != NULL ) {
+            if( do_i ) {
+                wprintf(L"  Init device\n");
+                send(hiddev, 0x1a, 0x00);
+            }
             if( do_c ) {
                 wprintf(L"  Set input channel: %d\n", input_channel);
                 send(hiddev, 0x2a, input_channel);
@@ -173,7 +181,6 @@ int main(int argc, char *argv[])
                 wprintf(L"  Set output right volume: %d\n", output_r);
                 send(hiddev, 0x09, output_r);
             }
-            send(hiddev, 0x1a, 0x00);
             hid_close(hiddev);
         } else
             wprintf(L"Unable to open hid device\n");
