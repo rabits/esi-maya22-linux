@@ -16,6 +16,9 @@
        __typeof__ (b) _b = (b); \
          _a < _b ? _a : _b; })
 
+bool do_disable_headphone = false; // New variable to disable hearing aids
+
+
 void enumerate_hid()
 {
     hid_device_info * hinfo;
@@ -75,13 +78,16 @@ int main(int argc, char *argv[])
     // Parse arguments
     int opt = 0;
     signed char c;
-    while( (c = getopt(argc, argv, "eidc:Mml:r:L:R:h")) != -1 ) {
+    while( (c = getopt(argc, argv, "eidc:Mml:r:L:R:Ih")) != -1 ) {
         switch( c ) {
             case 'e':
                 do_e = true;
                 break;
             case 'i':
                 do_i = true;
+                break;
+            case 'I':  // New variable to disable hearing aids
+                do_disable_headphone = true;
                 break;
             case 'd':
                 do_i = true; do_c = true; do_m = true; do_l = true; do_r = true; do_L = true; do_R = true;
@@ -132,6 +138,7 @@ int main(int argc, char *argv[])
                 wprintf(L"Usage: %s [options]\n\n", argv[0]);
                 wprintf(L"  -e          - Enumerate available devices\n");
                 wprintf(L"  -i          - Enable headphone\n");
+                wprintf(L"  -I          - Disable headphone\n");
                 wprintf(L"  -d          - Set default values\n");
                 wprintf(L"  -c <name>   - Set input channel ('mic', 'hiz', 'line', 'mic_hiz', 'mute')\n");
                 wprintf(L"  -M          - Input monitoring on\n");
@@ -153,12 +160,16 @@ int main(int argc, char *argv[])
     if( do_e )
         enumerate_hid();
 
-    if( do_i || do_c || do_m || do_l || do_r || do_L || do_R ) {
+    if( do_i || do_c || do_m || do_l || do_r || do_L || do_R || do_disable_headphone ) {
         hiddev = hid_open(VENDOR_ID, PRODUCT_ID, NULL);
         if( hiddev != NULL ) {
             if( do_i ) {
                 wprintf(L"  Enable headphone\n");
                 send(hiddev, 0x1a, 0x00);
+            }
+            if( do_disable_headphone ) {
+                wprintf(L"  Disable headphone\n");
+                send(hiddev, 0x1a, 0x01);  // Comando para deshabilitar audífonos (asumido)
             }
             if( do_c ) {
                 wprintf(L"  Set input channel: %d\n", input_channel);
