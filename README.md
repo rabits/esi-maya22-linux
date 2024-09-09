@@ -1,4 +1,4 @@
-ESI Maya22
+ESI Maya22 
 ==========
 
 This is control application for the [ESI Maya22](http://www.esi-audio.com/products/maya22usb/) usb sound device.
@@ -21,6 +21,7 @@ Usage: ./maya22-control [options]
 
   -e          - Enumerate available devices
   -i          - Enable headphone
+  -I          - Disable headphones
   -d          - Set default values
   -c <name>   - Set input channel ('mic', 'hiz', 'line', 'mic_hiz', 'mute')
   -M          - Input monitoring on
@@ -39,7 +40,7 @@ Just create udev rule for hidraw device with autorun set defaults (/etc/udev/rul
 KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2573", ATTRS{idProduct}=="0017", GROUP="plugdev", MODE="0660", RUN+="/usr/local/bin/maya22-control -d"
 ```
 
-GUI application
+2024-09-91 - New variable to disable headphone
+
+New GUI application in Construction  
 ---------------
-You can find GUI more useful for your needs, so please check the following project:
-* https://gitlab.com/Psy-Kai/ESI-Maya22USBControl

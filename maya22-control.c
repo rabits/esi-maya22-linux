@@ -16,7 +16,7 @@
        __typeof__ (b) _b = (b); \
          _a < _b ? _a : _b; })
 
-bool do_disable_headphone = false; // New variable to disable hearing aids
+bool do_disable_headphone = false; //  New variable to disable headphone
 
 
 void enumerate_hid()
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
             case 'i':
                 do_i = true;
                 break;
-            case 'I':  // New variable to disable hearing aids
+            case 'I':  // New variable to disable headphone
                 do_disable_headphone = true;
                 break;
             case 'd':
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
             }
             if( do_disable_headphone ) {
                 wprintf(L"  Disable headphone\n");
-                send(hiddev, 0x1a, 0x01);  // Comando para deshabilitar audífonos (asumido)
+                send(hiddev, 0x1a, 0x01);  // Command Add 
             }
             if( do_c ) {
                 wprintf(L"  Set input channel: %d\n", input_channel);
